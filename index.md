@@ -215,9 +215,8 @@ The results reveal that the optimal timing is shifted to January and May, and De
 
 How does the winning probability change over the years?  
 
-[Dynamic Graph: Oscar Probability over Years]  
-
-![Oscar_Probability_over_Years](./assets/img/Oscar_Probability_over_Years.png)
+![Dynamic Graph: Oscar Probability over Years]
+![Oscar_Probability_over_Years](./assets/img/Oscar Probability over Years.png)
 
 ### 2.4 Confounders: Locations and Languages
 Except for the timing, other factors may influence the winning probability as well. Here, we can take locations and languages into account.  
@@ -364,7 +363,7 @@ Let's break down the box office cycle month by month. We'll analyze which months
 #### 3.3.2. By Season – The Seasonal Box Office Trends
 Zooming out, we'll assess box office performance by season. Is summer really the blockbuster champion? Does winter bring more than just the holiday spirit to theaters? We'll see how each season stacks up in the race for box office success.
 
-## Jason Notebook
+### 3.1. Ratings Versus Revenue – Does a "bad movie" makes less money than a "better" one ?
 ![Rating_Heatmap](./assets/img/Rating_Heatmap.png)
 
 Using the color bar scale for movie ratings that range from 5.6 to 6.6, we can draw specific conclusions from the first heatmap, which shows the relationship between movie ratings and release months across different genres:  
@@ -405,8 +404,8 @@ The analysis indicates that movie studios could use these insights for strategic
 
 To have a more complete analysis and validation, Causal Analysis is done later  
 
-### 3.2 Data Analysis
-##### Rating Data Early Analysis
+### 3.2. Timing and Ratings – Searching for a Pattern
+
 Now, Plot a histogram of Ratings and check the mean, median, and mode  
 
 ![Histogram_Rating](./assets/img/Histogram_Rating.png)
@@ -414,43 +413,24 @@ Now, Plot a histogram of Ratings and check the mean, median, and mode
 Movie Box Office Revenue:  
 The mean revenue is approximately 49.92 million, but there's a large standard deviation ($110.47 million), indicating a wide range in revenues.  
 
-There are 7,024 movies with reported box office revenues. This subset will be essential for revenue-related analyses.  
-
 Release Month and Year:  
 
 Movies are distributed across all months, with the Release Month ranging from 1 to 12.  
-The Release Year ranges from 1010 to 2016, which seems to contain an error (year 1010 is likely incorrect).  
 
 Votes Number:
-The average number of votes is 22,530, but this varies widely (standard deviation of 96,625).  
+
+The average number of votes is 22,530, but this varies widely (standard deviation of 96,625).
 
 Rating:
-The average rating is 6.31 out of 10, with a standard deviation of 1.13.  
-
-##### Exploratory Data Analysis:
-We'll explore the distribution of movies across different months and years, focusing on how these factors relate to box office revenues, number of votes, and ratings.  
-Distribution of Movies Across Different Months:  
-    
-The distribution shows variability in the number of movies released each month. Some months have more releases than others.  
-
-Total Box Office Revenue per Month:  
-
-The total box office revenue varies significantly across different months. This suggests a potential relationship between the release month and financial success.  
-
-Average Movie Rating per Month:  
-
-The average ratings across months show some variation, indicating that the release month might have an impact on how movies are received by audiences.  
-
-Total Number of Votes per Month:  
-
-Similar to box office revenue, the total number of votes varies across months, hinting at a correlation between release month and audience engagement.  
+The average rating is 6.31 out of 10, with a standard deviation of 1.13. 
+   
 
 ## Causal Analysis  
 The dataset contains several columns that are relevant to our causal analysis. Here's a brief overview of the columns:  
 
 Movie name: Another column for the movie title  
 
-Movie box office revenue: Box office revenue for the movie  
+Moviebox office revenue: Box office revenue for the movie  
 
 Movie runtime: Runtime of the movie  
 
@@ -472,38 +452,15 @@ RATING: Rating of the movie
 
 For the causal analysis, the key variables of interest are Release Month, Movie box office revenue, votes_number, and RATING. Other variables like Release Year, Movie genres, Movie runtime, and Movie countries could be important as confounders or control variables.  
 
-We will start by preprocessing the data, including dealing with missing values, and then proceed to create a causal graph. This graph will illustrate the assumed causal relationships between the release month and the movie's success/popularity, as well as other relevant variables. We'll then use propensity score matching and sensitivity analysis to draw conclusions.  
+We will start by creating a causal graph. This graph will illustrate the assumed causal relationships between the release month and the movie's success/popularity, as well as other relevant variables. We'll then use propensity score matching and sensitivity analysis to draw conclusions.  
 
-Let's begin by preprocessing the data. ​​ 
-The dataset has a significant number of missing values in several key columns:  
+Movie Genres, Runtime, and Countries: These could act as important control variables in our analysis. We might impute missing values or use only complete cases, depending on the distribution and nature of these missing values.   
 
-Movie box office revenue: 32,462 missing values  
-Movie genres: 321 missing values  
-Movie runtime: 4,778 missing values  
-Movie countries: 2,019 missing values  
-Since our analysis focuses on the impact of the release month on a movie's success and popularity, as indicated by box office revenues, number of votes, and ratings, we need to handle these missing values carefully.  
-
-Box Office Revenue: This is a crucial variable for our analysis. Given the large number of missing values, we need to decide whether to impute these values, use only the subset of data with non-missing revenues, or focus our analysis on the other outcome variables (votes and ratings) where data is more complete.  
-
-Movie Genres, Runtime, and Countries: These could act as important control variables in our analysis. We might impute missing values or use only complete cases, depending on the distribution and nature of these missing values.  
-
-Let's first assess the proportion of missing data in Movie box office revenue and then decide on the appropriate course of action.  
-
-Approximately 82.21% of the data in the 'Movie box office revenue' column is missing. This is a substantial portion, making it challenging to impute the values accurately or use this variable as a primary outcome in our analysis.  
-
-For Causal Analysis, we will focus on the other outcome variables (number of votes and ratings), which have complete data. This approach would limit our ability to measure financial success but would still allow us to analyze popularity and critical reception.  
-
-Handling Missing Values: For columns like 'Movie genres', 'Movie runtime', and 'Movie countries'  
-
-Movie Genres: We can fill missing values with 'Unknown Genre' to preserve the integrity of genre-specific analysis.  
-
-Movie Runtime: We can impute missing values with the median runtime of 95 minutes.  
-
-Movie Countries: We can fill missing values with 'Unknown Country'.  
+For Causal Analysis we will focus on the number of votes and ratings, which have complete data.  
 
 A causal graph is a visual representation of the assumed causal relationships between variables. In our case, it will depict how the release month might influence a movie's number of votes and ratings, while also showing the potential influence of other variables like genre, runtime, and release year.  
 
-I'll create a basic causal graph based on common assumptions in film analytics:  
+We'll create a basic causal graph based on common assumptions in film analytics:  
 
 The release month (Release Month) may directly affect the number of votes (votes_number) and ratings (RATING).  
 
@@ -522,20 +479,7 @@ Indirect Effects: The graph also allows for the possibility of indirect effects,
 
 With this causal framework in place, the next step is to use propensity score matching. This method will help us estimate the causal effect of the release month on the number of votes and ratings by balancing the distribution of other covariates (like genres, runtime, and release year) across different release months.  
 
-## Propensity Score Estimation: 
-
-We'll estimate the propensity scores for each movie, which is the probability of being released in a particular month, given the observed covariates (movie genres, runtime, release year).
-
-Since we have multiple release months, we'll treat each month as a separate "treatment" and compare it with the rest. This process will be iterative, comparing one month against all others in turn.
-
-Let's start by estimating the propensity scores. For this, I'll use logistic regression, treating each month as a binary treatment (e.g., January vs. non-January) in separate models. After that, we'll proceed with the matching and effect estimation.
-Propensity scores for each movie's likelihood of being released in January (and similarly for other months) have been estimated using logistic regression. These scores represent the probability of a movie being released in a specific month, given its genre, runtime, country of release, and release year.
-
-The next step is to perform the matching. We will match movies based on these propensity scores to create comparable groups for each release month. There are various matching techniques, but a common approach is to use nearest-neighbor matching. This method pairs each movie in the treatment group (e.g., released in January) with a movie in the control group (not released in January) that has the closest propensity score.
-
-After matching, we will compare the average number of votes and ratings between matched movies in the treatment and control groups for each month. This will allow us to estimate the average effect of being released in each month on these outcomes.
-
-Let's proceed with the matching and then calculate the average effects. 
+### Propensity Score Estimation: 
 
 
 Propensity Score Estimation: We'll estimate the propensity scores for each movie, which is the probability of being released in a particular month, given the observed covariates (movie genres, runtime, release year).  
@@ -544,9 +488,11 @@ Effect Estimation: After matching, we'll estimate the average effect of being re
 
 Since we have multiple release months, we'll treat each month as a separate "treatment" and compare it with the rest. This process will be iterative, comparing one month against all others in turn.  
 
-Let's start by estimating the propensity scores. For this, I'll use logistic regression, treating each month as a binary treatment (e.g., January vs. non-January) in separate models. After that, we'll proceed with the matching and effect estimation.  
+We'll use logistic regression, treating each month as a binary treatment (e.g., January vs. non-January) in separate models. After that, we'll proceed with the matching and effect estimation.  
 
-Propensity scores for each movie's likelihood of being released in January (and similarly for other months) have been estimated using logistic regression. These scores represent the probability of a movie being released in a specific month, given its genre, runtime, country of release, and release year.  
+Propensity scores for each movie's likelihood of being released in January (and similarly for other months) have been estimated using logistic regression. These scores represent the probability of a movie being released in a specific month, given its genre, runtime, country of release, and release year.
+
+### Matching and Comparisons
 
 The next step is to perform the matching. We will match movies based on these propensity scores to create comparable groups for each release month. There are various matching techniques, but a common approach is to use nearest-neighbor matching. This method pairs each movie in the treatment group (e.g., released in January) with a movie in the control group (not released in January) that has the closest propensity score.  
 
@@ -636,27 +582,6 @@ Popularity Peaks: Genres like Drama and Comedy seem to fare better in votes towa
 Ratings Variability: Ratings fluctuate significantly across months and genres, with some genres like Thriller and Action experiencing their highest ratings towards the end of the year.  
 
 Strategic Release Timing: These insights suggest that strategic timing for movie releases can be crucial and should be tailored according to the genre to maximize success and reception.  
-
-##### Exploring the Box Office Data  
-Now check the percentage of missing data in the 'box_office' column for each year to see if earlier stages had less documentation of box office revenues, which is true to an extent since missing data is still high for later years  
-
-![Average Rating](./assets/img/Average Rating.png)
-
-Now, we plot a heat map to show the box office revenues and distribution over different ratings. An interesting is that the highest revenues seem to be for movies with ratings close to the mean and not the upper part of ratings.  
-
-![Density_Plot](./assets/img/Density_Plot.png)
-
-##### Conclusions
-1- The IMDB dataset, with its higher vote counts, is more robust for analyzing movie popularity than the CMU dataset.  
-
-2- Merged data show no missing ratings, allowing for a reliable analysis of movie ratings' distribution, which centers around a mean of 6.3.  
-
-3- Monthly variations in the number of votes are more pronounced than in ratings, suggesting that movies can achieve widespread attention regardless of high ratings.  
-
-4- Seasonal trends show higher box office revenues during the summer and end-of-year holidays, aligning with typical blockbuster release schedules.  
-
-5- The highest-grossing movies have ratings around the mean, implying that exceptional ratings do not necessarily equate to financial success.  
-
 
 
 #### Transition :
